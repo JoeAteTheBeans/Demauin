@@ -23,7 +23,7 @@ public partial class RubyLabel
     
     public static readonly BindableProperty RubyTextSizeProperty = BindableProperty.Create(nameof(RubyTextSize), typeof(double), typeof(RubyLabel), propertyChanged:OnAnyPropertyChanged, defaultValue: 12.0);
     
-    public static readonly BindableProperty FontProperty = BindableProperty.Create(nameof(Font), typeof(string), typeof(RubyLabel), propertyChanged:OnAnyPropertyChanged, defaultValue: null);
+    public static readonly BindableProperty FontFamilyProperty = BindableProperty.Create(nameof(FontFamily), typeof(string), typeof(RubyLabel), propertyChanged:OnAnyPropertyChanged, defaultValue: null);
     
     public static readonly BindableProperty LineHeightProperty = BindableProperty.Create(nameof(LineHeight), typeof(double), typeof(RubyLabel), propertyChanged:OnAnyPropertyChanged, defaultValue: 1.25);
     
@@ -121,10 +121,10 @@ public partial class RubyLabel
     /// A <see cref="string"/> representing the font family's file name in embedded resources.
     /// Defaults to <c>null</c>.
     /// </value>
-    public string? Font
+    public string? FontFamily
     {
-        get => (string?)GetValue(FontProperty);
-        set => SetValue(FontProperty, value);
+        get => (string?)GetValue(FontFamilyProperty);
+        set => SetValue(FontFamilyProperty, value);
     }
 
     /// <summary>
@@ -211,7 +211,7 @@ public partial class RubyLabel
         <style type='text/css'>
             @font-face {{
                 font-family: RubyLabelFont;
-                src: url(""{Font}.ttf"");
+                src: url(""{FontFamily}.ttf"");
             }}
             body {{
                 font-family: 'RubyLabelFont', sans-serif;
