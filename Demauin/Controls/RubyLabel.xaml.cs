@@ -273,4 +273,22 @@ public partial class RubyLabel
                 WebView.WidthRequest = width;
         }
     }
+    
+    private void OnNavigating(object sender, WebNavigatingEventArgs e)
+    {
+        if (e.Url.StartsWith("app://navfunc/"))
+        {
+            e.Cancel = true;
+            string[] components = e.Url[14..].Split("/");
+            switch (components[0])
+            {
+                case "setSize":
+                    SetSize();
+                    break;
+                case "invoke":
+                    HtmlInvocation.Invoke(this, new RubyLabelHtmlInvocationEventArgs(components[1], components[2]));
+                    break;
+            }
+        }
+    }
 }
