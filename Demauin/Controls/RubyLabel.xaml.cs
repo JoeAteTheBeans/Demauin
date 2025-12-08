@@ -2,6 +2,12 @@
 
 namespace Demauin.Controls;
 
+/// <summary>
+/// A control that displays text with optional ruby annotations.
+/// </summary>
+/// <remarks>
+/// Uses a WebView to display the text.
+/// </remarks>
 public partial class RubyLabel
 {
     //Bindable Properties
@@ -26,60 +32,134 @@ public partial class RubyLabel
     public static readonly BindableProperty RubyMarginProperty = BindableProperty.Create(nameof(RubyMargin), typeof(double), typeof(RubyLabel), propertyChanged:OnAnyPropertyChanged, defaultValue: 2.5);
     
     //Properties
+    
+    /// <summary>
+    /// Gets or sets the main text displayed by the control.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> containing raw text or HTML markup text.
+    /// Defaults to an empty string.
+    /// </value>
+    /// <remarks>
+    /// Use the ruby and rt HTML tags to add ruby annotations.
+    /// </remarks>
     public string Text
     {
         get => (string)GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
     
+    /// <summary>
+    /// Gets or sets the colour of the main text.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Color"/> value.
+    /// Defaults to <see cref="Colors.White"/>.
+    /// </value>
     public Color TextColour
     {
         get => (Color)GetValue(TextColourProperty);
         set => SetValue(TextColourProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the font size of the main text in device-independent pixels.
+    /// </summary>
+    /// <value>
+    /// A <see cref="double"/>.  
+    /// Defaults to <c>18.0</c>.
+    /// </value>
     public double TextSize
     {
         get => (double)GetValue(TextSizeProperty);
         set => SetValue(TextSizeProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the horizontal text alignment of the rendered text.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TextAlignment"/> value.  
+    /// Defaults to <see cref="TextAlignment.Start"/>.
+    /// </value>
     public TextAlignment TextAlignment
     {
         get => (TextAlignment)GetValue(TextAlignmentProperty);
         set => SetValue(TextAlignmentProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the colour of the ruby text.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Color"/> value.
+    /// Defaults to <see cref="Colors.DarkGrey"/>
+    /// </value>
     public Color RubyTextColour
     {
         get => (Color)GetValue(RubyTextColourProperty);
         set => SetValue(RubyTextColourProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the size of the ruby text in device-independent units.
+    /// </summary>
+    /// <value>
+    /// A <see cref="double"/> value.
+    /// Defaults to <c>12.0</c>
+    /// </value>
     public double RubyTextSize
     {
         get => (double)GetValue(RubyTextSizeProperty);
         set => SetValue(RubyTextSizeProperty, value);
     }
     
+    /// <summary>
+    /// Gets or sets the font family for the text and ruby text.  
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> representing the font family's file name in embedded resources.
+    /// Defaults to <c>null</c>.
+    /// </value>
     public string? Font
     {
         get => (string?)GetValue(FontProperty);
         set => SetValue(FontProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the line height multiplier of the text.
+    /// </summary>
+    /// <value>
+    /// A <see cref="double"/> value.
+    /// Defaults to <c>1.2</c>
+    /// </value>
     public double LineHeight
     {
         get => (double)GetValue(LineHeightProperty);
         set => SetValue(LineHeightProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the spacing between characters, in device-independent units.
+    /// </summary>
+    /// <value>
+    /// A <see cref="double"/> value.
+    /// Defaults to <c>0.0</c>
+    /// </value>
     public double CharacterSpacing
     {
         get => (double)GetValue(CharacterSpacingProperty);
         set => SetValue(CharacterSpacingProperty, value);
     }
 
+    /// <summary>
+    /// Gets or sets the margin above ruby text.
+    /// </summary>
+    /// <value>
+    /// A <see cref="double"/> value.
+    /// Defaults to <c>2.5</c>
+    /// </value>
     public double RubyMargin
     {
         get => (double)GetValue(RubyMarginProperty);
@@ -87,6 +167,14 @@ public partial class RubyLabel
     }
     
     //Event Handlers
+    
+    /// <summary>
+    /// Occurs when the embedded WebView requests an invocation
+    /// using the "<c>app://navfunc/invoke/{functionName}/{value}</c>" protocol.
+    /// </summary>
+    /// <remarks>
+    /// Use this event to respond to JavaScript events inside the control.
+    /// </remarks>
     public event EventHandler<RubyLabelHtmlInvocationEventArgs> HtmlInvocation = delegate { };
     
     //Constructors
@@ -108,6 +196,10 @@ public partial class RubyLabel
     protected virtual void OnLoaded(object sender, System.EventArgs e)
         => RenderWebView();
 
+    /// <summary>
+    /// Rebuilds the internal Webview, applying current property values,
+    /// and loads the content into the embedded WebView.
+    /// </summary>
     protected void RenderWebView()
     {
         WidthRequest = -1;
@@ -165,24 +257,13 @@ public partial class RubyLabel
         "};
     }
 
-    private void OnNavigating(object sender, WebNavigatingEventArgs e)
-    {
-        if (e.Url.StartsWith("app://navfunc/"))
-        {
-            e.Cancel = true;
-            string[] components = e.Url[14..].Split("/");
-            switch (components[0])
-            {
-                case "setSize":
-                    SetSize();
-                    break;
-                case "invoke":
-                    HtmlInvocation.Invoke(this, new RubyLabelHtmlInvocationEventArgs(components[1], components[2]));
-                    break;
-            }
-        }
-    }
-
+    /// <summary>
+    /// Queries the rendered HTML to determine its required width
+    /// and adjusts the WebView size if needed.
+    /// </summary>
+    /// <remarks>
+    /// Only runs when <see cref="View.HorizontalOptions"/> is not set to <see cref="LayoutOptions.Fill"/>.
+    /// </remarks>
     protected async void SetSize()
     {
         if (HorizontalOptions != LayoutOptions.Fill)
