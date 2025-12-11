@@ -182,7 +182,7 @@ public partial class RubyLabel
     {
         InitializeComponent();
         Loaded += OnLoaded!;
-        WebView.Navigating += OnNavigating!;
+        WebView.Navigating += OnNavigating;
     }
     
     //OnPropertyChangedEvents
