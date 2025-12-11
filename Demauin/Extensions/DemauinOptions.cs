@@ -1,6 +1,3 @@
 ﻿namespace Demauin.Extensions;
 
-public partial class DemauinOptions
-{
-    
-}
+public partial class DemauinOptions;
