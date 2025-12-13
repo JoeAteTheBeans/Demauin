@@ -7,6 +7,7 @@ public static class FeedbackAnimations
 {
     public static async Task ScaleAsync(this View view, 
         double scaleFrom = 1.0, double scaleTo = 1.1, 
+    public static async Task ScaleFeedbackAsync(this View view, 
         uint length = 100, Easing? easing = null,
         bool disableDuringAnimation = true)
     {
@@ -20,6 +21,7 @@ public static class FeedbackAnimations
 
     public static async Task ShakeXAsync(this View view,
         double shakeFrom = 0, double shakeDistance = 10.0, uint shakeAmount = 2,
+    public static async Task ShakeFeedbackAsync(this View view,
         uint shakeLength = 20, Easing? easing = null,
         bool disableDuringAnimation = true)
     {
